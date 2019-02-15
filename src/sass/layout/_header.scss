@@ -1,0 +1,24 @@
+.main-header {
+  padding: 10px;
+  margin-bottom: 80px;
+}
+
+.bag-title {
+  position: relative;
+  text-transform: uppercase;
+  font-size: 1.75em;
+  margin-bottom: 20px;
+
+  span {
+    display: inline-block;
+    vertical-align: middle;
+  }
+
+  .bag-icon {
+    height: 40px;
+    width: 40px;
+    margin-right: 10px;
+    background-repeat: no-repeat;
+    background-image: url("../assets/img/bag.png");
+  }
+}

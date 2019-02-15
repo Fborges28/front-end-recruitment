@@ -1,0 +1,22 @@
+.product-item {
+  min-height: 250px;
+  margin-bottom: 80px;
+  display: flex;
+  flex-flow: column;
+  justify-content: flex-end;
+  align-items: center;
+
+  img {
+    margin-bottom: 20px;
+  }
+}
+
+.no-image {
+  display: flex;
+  min-height: 200px;
+  justify-content: center;
+  align-items: center;
+  min-width: 200px;
+  background: #ccc;
+  margin-bottom: 20px;
+}
