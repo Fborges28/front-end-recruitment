@@ -6,7 +6,7 @@ const parts = require('./webpack.parts');
 const webpackPlugins = require('./webpack.plugins');
 
 const PATHS = {
-  build: path.resolve(__dirname, 'public')
+  build: path.resolve(__dirname, 'dist')
 }
 
 const commonConfig = merge([

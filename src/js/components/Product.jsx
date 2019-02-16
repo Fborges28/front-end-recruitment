@@ -28,7 +28,9 @@ const Product = (props) => {
           installments
         }
       </div>
-      <button className="btn btn-primary">Adicionar ao carrinho</button>
+      <div className="checkout">
+        <button className="btn btn-dark">Adicionar ao carrinho</button>
+      </div>
     </div>
   )
 }

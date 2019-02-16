@@ -11,10 +11,6 @@ export default class ShoppingCartList extends React.Component {
     }
   }
 
-  componentDidMount(){
-
-  }
-
   componentWillReceiveProps(nextProps){
     this.setState({
       shoppingCartList: nextProps.list,
@@ -32,17 +28,13 @@ export default class ShoppingCartList extends React.Component {
   }
 
   removeShoppingCartItem(item){
-    let list = this.state.shoppingCartList;
-
-    let filteredItens = list.filter((itemList, index)=>{
-      if(itemList.id === item.id){
-        item.quantity = 0;
-      }
+    let filteredItens = this.state.shoppingCartList.filter((itemList, index)=>{
       return itemList.id !== item.id; 
     })
 
     let subtotal = this.subTotal(filteredItens);
-    this.props.updateShoppingList(filteredItens)
+
+    this.props.removeItemFromShoppingList(filteredItens, item);
 
     this.setState(()=>{
       return {
@@ -54,6 +46,10 @@ export default class ShoppingCartList extends React.Component {
 
   roundNumber(number){
     return Math.round((number) * 100) / 100;
+  }
+
+  close(){
+    this.props.close();
   }
  
   render(){
@@ -78,11 +74,12 @@ export default class ShoppingCartList extends React.Component {
         </div>
       )
     }else{
-      subtotal = (<p className="text-center"><span>Ainda não há itens na sua sacola</span></p>)
+      subtotal = (<p className="without-cart text-center"><span>Ainda não há itens na sua sacola</span></p>)
     }
 
     return (
-      <div className="shopping-cart-list">
+      <div className={`${this.state.shoppingCartList.length > 0 ? "":"without-cart"} shopping-cart-list`}>
+        <button className="close" onClick={e => this.close(e)}>x</button>
         <h2 className="text-center bag-title"><span className="bag-icon"></span><span className="bag-text">Sacola</span></h2>
         {
           this.state.shoppingCartList.map((item, index) => {

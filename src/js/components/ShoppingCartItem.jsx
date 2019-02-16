@@ -20,12 +20,14 @@ export default class ShoppingCartItem extends React.Component {
         <button className="close" onClick={e => this.removeItem(e)}>x</button>
         <div className="shopping-cart-item-thumb">{imageContent}</div>
         <div className="shopping-cart-item-info">
-          <h5 className="shopping-cart-item-title">{this.props.info.title}</h5>
-          <p>
-            <span>{this.props.info.availableSizes.join(",")}</span>
-            <span className="separator"> | </span>
-            <span>{this.props.info.style}</span>
-          </p>
+          <div className="shopping-cart-item-description">
+            <h5 className="shopping-cart-item-title">{this.props.info.title}</h5>
+            <p>
+              <span>{this.props.info.availableSizes.join(",")}</span>
+              <span className="separator"> | </span>
+              <span>{this.props.info.style}</span>
+            </p>
+          </div>
           <div className="shopping-cart-quantity">
             <span className="item-size">Quantidade: {this.props.info.quantity}</span>
             <span className="item-price">{this.props.info.currencyFormat}{Math.round((this.props.info.price * this.props.info.quantity) * 100) / 100}</span>

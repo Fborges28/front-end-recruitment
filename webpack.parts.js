@@ -53,7 +53,7 @@ const fileLoader = {
   test: /\.(jpg|png|gif|svg|pdf|ico)$/,
   use: [
     {
-      loader: 'url-loader',
+      loader: 'file-loader',
       options: {
         name: '[path][name]-[hash:8].[ext]'
       }

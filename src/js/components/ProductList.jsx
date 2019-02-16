@@ -14,8 +14,8 @@ export default class ProductList extends React.Component {
     super(props);
     this.state = {
       products: [],
-      renderShoppingCart: false,
-      shoppingCartList: [],
+      renderShoppingCart: this.recoverLocalShoppingCart().length > 0,
+      shoppingCartList: this.recoverLocalShoppingCart(),
       itemToAdd: {}
     }
   }
@@ -46,7 +46,7 @@ export default class ProductList extends React.Component {
   
   getRequest(cb){
     let xhr = new XMLHttpRequest();
-    xhr.open("GET", "/public/data/products.json");
+    xhr.open("GET", "http://localhost:9001/products");
     xhr.onload = function(event){
       cb(JSON.parse(xhr.responseText))
     }.bind(this);
@@ -56,7 +56,7 @@ export default class ProductList extends React.Component {
   handleShoppingListClick(e){
     // CLICK ON PURCHASE BUTTON
     if(e.target.nodeName.toLowerCase() === "button"){
-      let currentSKU = parseInt(e.target.parentElement.dataset.sku);
+      let currentSKU = parseInt(e.target.closest(".product-item").dataset.sku);
       //console.log(this.state.shoppingCartList.find(item => item.sku === currentSKU) == undefined)
 
       let currentProduct = this.state.products.filter((element)=>{
@@ -87,6 +87,8 @@ export default class ProductList extends React.Component {
           renderShoppingCart: true,
           itemToAdd: currentProduct
         }
+      }, function(){
+        this.saveLocalShoppingCart();
       })
       
       //Remove os duplicados e adiciona a propriedade size para indicar quantos itens existem
@@ -99,18 +101,42 @@ export default class ProductList extends React.Component {
     } 
   }
 
-  updateShoppingList(itens){
+  saveLocalShoppingCart(){
+    let localData = JSON.stringify(this.state.shoppingCartList);
+    localStorage.setItem("netshoes-shopping-cart", localData);
+  }
+
+  recoverLocalShoppingCart(){
+    let local = localStorage.getItem("netshoes-shopping-cart");
+    if(local !== null){
+      return JSON.parse(local);
+    }else{
+      return [];
+    }
+  }
+
+  removeItemFromShoppingList(list, item){
+    item.quantity = 0;
     this.setState({
-      shoppingCartList: itens
+      shoppingCartList: list
+    }, function(){
+      this.saveLocalShoppingCart();
     })
+  }
+
+  toggleShoppingCart(e){
+    this.setState({renderShoppingCart: !this.state.renderShoppingCart});
   }
 
   render(){
     console.log("render")
     return (
       <div>
+        <button className="btn btn-dark mb-30 toggle-shopping-cart" onClick={e => this.toggleShoppingCart(e)}>
+          <p className="text-center bag-title"><span className="bag-icon"></span></p>
+        </button>
         <Container onClick={e => this.handleShoppingListClick(e)}>
-          <Row>
+          <Row className="product-list-row">
             {
               this.state.products.map((element, index) => {
                 return (
@@ -123,7 +149,7 @@ export default class ProductList extends React.Component {
           </Row>
         </Container>
         {
-          this.state.renderShoppingCart ? <ShoppingCart updateShoppingList={itens => this.updateShoppingList(itens)} toAdd={this.state.itemToAdd} list={this.state.shoppingCartList}/> : null
+          this.state.renderShoppingCart ? <ShoppingCart close={(e) => this.toggleShoppingCart(e)} removeItemFromShoppingList={(list, item) => this.removeItemFromShoppingList(list, item)} toAdd={this.state.itemToAdd} list={this.state.shoppingCartList}/> : null
         }
       </div>
     )
