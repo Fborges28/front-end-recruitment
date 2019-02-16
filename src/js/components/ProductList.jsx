@@ -4,6 +4,7 @@ import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import ShoppingCart from "./ShoppingCartList.jsx";
 import Product from "./Product.jsx";
+import ProductsService from "../services/ProductsService";
 
 //LOAD IMAGES
 const images = require.context('../../assets/img', true)
@@ -21,8 +22,8 @@ export default class ProductList extends React.Component {
   }
   
   componentDidMount(){
-    this.getRequest((data)=>{
-      let products = data.products;
+    ProductsService.getProductList((data)=>{
+      let products = data;
       let productsWithThumbs = products.map((item, index) => {
         try{
           item.thumb = imagePath(`./sku_${item.sku}.png`);
@@ -32,7 +33,7 @@ export default class ProductList extends React.Component {
         return item;
       })
 
-      //SETA A QUANTIDADE INICIAL DE ITENS NO CARRINHO
+      //SETA A QUANTIDADE INICIAL DE ITENS
       productsWithThumbs.forEach((item, index) => {
         item.quantity = 0;
       })
@@ -44,16 +45,8 @@ export default class ProductList extends React.Component {
       })
     });
   }
-  
-  getRequest(cb){
-    let xhr = new XMLHttpRequest();
-    xhr.open("GET", "http://localhost:9001/products");
-    xhr.onload = function(event){
-      cb(JSON.parse(xhr.responseText))
-    }.bind(this);
-    xhr.send();
-  }
 
+  //Remove os duplicados e adiciona a propriedade size para indicar quantos itens existem
   handleShoppingListClick(e){
     // CLICK ON PURCHASE BUTTON
     if(e.target.nodeName.toLowerCase() === "button"){
@@ -91,8 +84,6 @@ export default class ProductList extends React.Component {
       }, function(){
         this.saveLocalShoppingCart();
       })
-      
-      //Remove os duplicados e adiciona a propriedade size para indicar quantos itens existem
     }else{
       this.setState(() => {
         return {
@@ -102,11 +93,13 @@ export default class ProductList extends React.Component {
     } 
   }
 
+  //Salva os dados no localStorage
   saveLocalShoppingCart(){
     let localData = JSON.stringify(this.state.shoppingCartList);
     localStorage.setItem("netshoes-shopping-cart", localData);
   }
 
+  //Recupera os dados do localStorage
   recoverLocalShoppingCart(){
     let local = localStorage.getItem("netshoes-shopping-cart");
     if(local !== null){
@@ -115,7 +108,7 @@ export default class ProductList extends React.Component {
       return [];
     }
   }
-
+  
   removeItemFromShoppingList(list, item){
     item.quantity = 0;
     this.setState({
