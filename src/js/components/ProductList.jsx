@@ -19,6 +19,7 @@ export default class ProductList extends React.Component {
       itemToAdd: {}
     }
   }
+  
   componentDidMount(){
     this.getRequest((data)=>{
       let products = data.products;
